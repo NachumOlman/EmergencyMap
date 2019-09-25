@@ -1,0 +1,35 @@
+import com.ibm.cloud.sdk.core.service.security.IamOptions;
+import com.ibm.watson.speech_to_text.v1.SpeechToText;
+import com.ibm.watson.speech_to_text.v1.model.RecognizeOptions;
+import com.ibm.watson.speech_to_text.v1.model.SpeechRecognitionResults;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
+
+public class main {
+    public static void main(String []agrs){
+        IamOptions options = new IamOptions.Builder()
+                .apiKey("t2MK7y5_Nif1YM1EL1db6UGrkf-f48wwrMTukHggUvrH")
+                .build();
+
+        SpeechToText speechToText = new SpeechToText(options);
+        speechToText.setEndPoint("https://gateway-lon.watsonplatform.net/speech-to-text/api");
+
+        try {
+            RecognizeOptions recognizeOptions = new RecognizeOptions.Builder()
+                    .audio(new FileInputStream("audio-file2.flac"))
+                    .contentType("audio/flac")
+                    .wordAlternativesThreshold((float) 0.9)
+                    .keywords(Arrays.asList("colorado", "tornado", "tornadoes"))
+                    .keywordsThreshold((float) 0.5)
+                    .build();
+
+            SpeechRecognitionResults speechRecognitionResults =
+                    speechToText.recognize(recognizeOptions).execute().getResult();
+            System.out.println(speechRecognitionResults);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
